@@ -1,0 +1,55 @@
+﻿@page "/"
+@using LoginJwToken.Data
+@using System.Net.Http.Json;
+@inject HttpClient Http
+
+<div class="wrapper fadeInDown">
+    <div id="formContent">
+        <!-- Hearder -->
+        <h2>Autentificación</h2>
+        <div class="fadeIn first">
+            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="icon" alt="User Icon" />
+        </div>
+
+        <!-- Login Input -->
+        <form>
+            <input type="text" id="login" class="fadeIn second" name="login" placeholder="Usuario" @bind="@UserName">
+            <input type="password" id="password" class="fadeIn third" name="login" placeholder="Contraseña" @bind="@Password">
+        </form>
+
+        <button class="btn mt-3" @onclick="SubmitForm">Log In</button>
+        <br />
+        <br />
+
+        <!-- Token -->
+       <div class="wrappertoken fadeInDown">
+            <textarea> @Message </textarea>
+       </div>
+    </div>
+</div>
+
+
+
+@code{
+    //Variabes Locales
+    public string UserName { get; set; } = "";
+    public string Password { get; set; } = "";
+    public string Token { get; set; } = "";
+    public string Message { get; set; } = "";
+
+    //Accion del boton
+    private async Task SubmitForm()
+    {
+        var user = new User
+        {
+            //Validar Datos
+            UserName = UserName,
+            Password = Password
+        };
+
+        //Acción que trae las respues de la Api
+        var response = await Http.PostJsonAsync<TokenClass>("https://localhost:44316/Api/Login", user);
+        Message = response.TokenOrMessage;
+        Console.WriteLine(Message);
+    }
+}  
